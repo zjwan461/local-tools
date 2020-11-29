@@ -10,11 +10,6 @@ def index():
     return render_template("index.html")
 
 
-# def load_index():
-#     f = open("static/index.html")
-#     return f.read()
-
-
 js_api = api.Api()
 window = webview.create_window("小工具", server, js_api=js_api, width=1000, height=600, confirm_close=True,
                                text_select=True)

@@ -24,7 +24,6 @@ class Api:
         now = time.time().__str__().replace(".", "")[0: 13]
         data.setdefault("display_time", now)
         response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
-        # print(response.json())
         return response.json()
 
     def load_cache(self):

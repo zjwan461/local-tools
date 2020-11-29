@@ -26,6 +26,24 @@ class Api:
         response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
         return response.json()
 
+    def load_toutiao_news(self):
+        data = {
+            "tag": "__all__",
+            "ac": "wap",
+            "count": 20,
+            "format": "json_raw",
+            "as": "A1A5FFCC538AB5B",
+            "cp": "5FC37A8BA5FB4E1",
+            # "min_behot_time": "1606658898",
+            "_signature": "GPYXZgAARznhDf9pA0CbQBj2F3",
+            "i": "1606646151"
+        }
+
+        now = time.time().__str__().replace(".", "")[0: 10]
+        data.setdefault("min_behot_time", now)
+        response = requests.get("https://m.toutiao.com/list/", params=data)
+        return response.json()
+
     def load_cache(self):
         f = open("storage/cache.json", "r")
         cache_str = f.read()
@@ -37,6 +55,5 @@ class Api:
 
 
 if __name__ == '__main__':
-    # print(time.time().__str__().replace(".", "")[0: 13])
-    res = Api().load_news()
+    res = Api().load_toutiao_news()
     print(json.dumps(res))

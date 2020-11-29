@@ -24,6 +24,7 @@ class Api:
         now = time.time().__str__().replace(".", "")[0: 13]
         data.setdefault("display_time", now)
         response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
+        print(json.dumps(response.json()))
         return response.json()
 
     def load_toutiao_news(self):
@@ -42,6 +43,7 @@ class Api:
         now = time.time().__str__().replace(".", "")[0: 10]
         data.setdefault("min_behot_time", now)
         response = requests.get("https://m.toutiao.com/list/", params=data)
+        print(json.dumps(response.json()))
         return response.json()
 
     def load_cache(self):

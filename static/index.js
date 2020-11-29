@@ -8,7 +8,6 @@ window.addEventListener('pywebviewready', function () {
         var layer = layui.layer;
 
         function finishLoading() {
-            // alert("finish")
             $('.loading').fadeOut();//让loading效果消失，显示页面
             $('body').css('overflow', 'scroll');
             $('.video_box').fadeIn();
@@ -21,21 +20,15 @@ window.addEventListener('pywebviewready', function () {
         }
 
         loadCacheTab();
-        //监听Tab切换，以改变地址hash值
+        //监听Tab切换
         element.on('tab(tab)', function () {
             let id = this.getAttribute('lay-id');
-            // alert(id)
-            // if (id == 'news') {
-            //     loadNewsData();
-            // }
-            if (init == 0) {
-                if (id == '1') {
-                    loadNewsData();
-                    init++
-                } else if (id == '2') {
-                    loadNewsData2();
-                    init++
-                }
+            if (id == '1') {
+                loadNewsData();
+                init++
+            } else if (id == '2') {
+                loadNewsData2();
+                init++
             }
             saveCacheTab(id)
 
@@ -53,7 +46,6 @@ window.addEventListener('pywebviewready', function () {
             pywebview.api.load_cache().then(response => {
                 if (response) {
                     let current_tab = response.current_tab;
-                    // alert(current_tab)
                     element.tabChange('tab', current_tab)
                 }
             })
@@ -62,14 +54,13 @@ window.addEventListener('pywebviewready', function () {
         function saveCacheTab(tab_id) {
             let cache = {"current_tab": tab_id.toString()}
             pywebview.api.save_cache(cache).then(response => {
-
             })
         }
 
         function loadNewsData() {
-            // alert("click")
             startLoading();
             pywebview.api.load_news().then(response => {
+                finishLoading();
                 if (response.errno != 0) {
                     layer.msg(response.errmsg);
                     return false;
@@ -99,7 +90,6 @@ window.addEventListener('pywebviewready', function () {
                             `)
                 });
 
-                finishLoading();
 
                 function loadImages(obj) {
                     let res = "";
@@ -147,10 +137,10 @@ window.addEventListener('pywebviewready', function () {
         function loadNewsData2() {
             startLoading();
             pywebview.api.load_toutiao_news().then(response => {
+                finishLoading();
                 if (response && response.data) {
                     $("#news-list2").html('')
                     let data = response.data;
-
                     $.each(data, function (index, item) {
                         $("#news-list2").append(`
                             <div class="layui-card">
@@ -163,17 +153,16 @@ window.addEventListener('pywebviewready', function () {
                             `)
                     })
 
-                    finishLoading();
 
                     function loadImages(obj) {
                         let res = "";
                         if (obj && obj.image_url) {
                             res += `
-                                    <img src="` + obj.image_url + `" alt="" width="50%;">
+                                    <img src="` + obj.image_url + `" alt="" width="30%;">
                                 `;
                         } else if (obj && obj.large_image_url) {
                             res += `
-                                    <img src="` + obj.large_image_url + `" alt="" width="50%;">
+                                    <img src="` + obj.large_image_url + `" alt="" width="30%;">
                                 `;
                         } else if (obj && obj.image_list.length > 0) {
                             $.each(obj.image_list, function (index, item) {

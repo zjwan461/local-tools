@@ -115,4 +115,5 @@ dmypy.json
 .pyre/
 
 .idea
+main.spec
 

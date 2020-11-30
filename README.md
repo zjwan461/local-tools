@@ -14,6 +14,8 @@ pywebview + flask + H5
 将项目clone或者下载到本地
 配置python运行环境
 
+打包exe可执行文件：pyinstaller --add-data "template;template" --add-data "static;static" --add-data "storage;storage" main.py
+
 #### 使用说明
 
 python main.py

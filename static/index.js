@@ -1,7 +1,4 @@
 window.addEventListener('pywebviewready', function () {
-    var init = 0;
-    var that = this;
-
     layui.use(['element', 'jquery', 'layer'], function () {
         var $ = layui.$;
         var element = layui.element;
@@ -23,14 +20,16 @@ window.addEventListener('pywebviewready', function () {
         //监听Tab切换
         element.on('tab(tab)', function () {
             let id = this.getAttribute('lay-id');
-            if (id == '1') {
+            if (id == '1' && $("#news-list").children().length == 0) {
                 loadNewsData();
-                init++
-            } else if (id == '2') {
+            } else if (id == '2' && $("#news-list2").children().length == 0) {
                 loadNewsData2();
-                init++
+            } else if (id == '3') {
+                finishLoading()
+            } else if (id == '4') {
+
             }
-            saveCacheTab(id)
+            saveCacheTab(id);
 
         });
 
@@ -41,6 +40,32 @@ window.addEventListener('pywebviewready', function () {
         document.getElementById("fre2").onclick = function () {
             loadNewsData2();
         };
+
+        $("#query").on('click', function () {
+            let option = $("#option").val();
+            let first = $("#first").val();
+            if (!first) {
+                layer.msg("未填写必填栏位", {icon: 5});
+                $("#first").focus();
+                return false;
+            }
+            if (first.length > 1) {
+                layer.msg("只能填写一个汉字", {icon: 5});
+                $("#first").focus();
+                return false;
+            }
+            let request_obj = {"option": option, "first": first};
+            // alert(JSON.stringify(request_obj))
+            pywebview.api.ts_trans(request_obj).then(response => {
+                // alert("response")
+                if (response) {
+                    $("#second").val(response)
+                }
+            }).catch(err => {
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5})
+            })
+
+        });
 
         function loadCacheTab() {
             pywebview.api.load_cache().then(response => {
@@ -54,6 +79,8 @@ window.addEventListener('pywebviewready', function () {
         function saveCacheTab(tab_id) {
             let cache = {"current_tab": tab_id.toString()}
             pywebview.api.save_cache(cache).then(response => {
+            }).catch(err => {
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5})
             })
         }
 
@@ -131,6 +158,9 @@ window.addEventListener('pywebviewready', function () {
                     });
                 });
 
+            }).catch(err => {
+                finishLoading();
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5})
             })
         }
 
@@ -201,6 +231,9 @@ window.addEventListener('pywebviewready', function () {
                         });
                     });
                 }
+            }).catch(err => {
+                finishLoading();
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5})
             });
         }
     });

@@ -38,6 +38,11 @@
     .video_box {
         display: none;
     }
+
+    textarea {
+        font-size: x-large;
+    }
+
 </style>
 <body>
 <div class="loading">
@@ -49,21 +54,45 @@
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="1">百度新闻</li>
             <li lay-id="2">今日头条</li>
-            <li lay-id="3">还没写</li>
-            <li lay-id="4">还没写</li>
-            <li lay-id="5">还没写</li>
+            <li lay-id="3">繁简转换</li>
+            <li lay-id="4">邮编查询</li>
+            <li lay-id="5">驾考题库</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
                 <button id="fre" class="layui-btn">点击刷新</button>
                 <div id="news-list"></div>
             </div>
-
             <div class="layui-tab-item">
                 <button id="fre2" class="layui-btn">点击刷新</button>
                 <div id="news-list2"></div>
             </div>
-            <div class="layui-tab-item">还没写</div>
+            <div class="layui-tab-item">
+                <div id="trans">
+                    <div>
+                        <select name="option" id="option">
+                            <option value="0">自动</option>
+                            <option value="1">简->繁</option>
+                            <option value="2">繁->简</option>
+                        </select>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-md5">
+                            <textarea name="first" id="first" cols="30" rows="10" class="layui-textarea"
+                                      style="resize: none"></textarea>
+                        </div>
+                        <div class="layui-col-md2">
+                            <div style="margin-top: 50%; text-align: center">
+                                <button class="layui-btn" id="query">查询</button>
+                            </div>
+                        </div>
+                        <div class="layui-col-md5">
+                            <textarea readonly name="second" id="second" cols="30" rows="10" class="layui-textarea"
+                                      style="resize: none"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="layui-tab-item">还没写</div>
             <div class="layui-tab-item">还没写</div>
         </div>

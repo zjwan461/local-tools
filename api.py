@@ -1,6 +1,7 @@
 import requests
 import time
 import json
+import dbutil
 
 
 class Api:
@@ -55,7 +56,38 @@ class Api:
         f = open("storage/cache.json", "w")
         f.write(json.dumps(cache))
 
+    def ts_trans(self, param):
+        op = param.get("option")
+        source = param.get("first")
+        connection = dbutil.get_connection()
+        cursor = connection.cursor()
+        if op == '0':
+            cursor.execute("select * from tb_st_data where simple = %s", source)
+            rs = cursor.fetchone()
+            result = rs[2]
+            if not rs:
+                cursor.execute("select * from tb_st_data where tradition = %s", source)
+                rs = cursor.fetchone()
+                result = rs[1]
+            if not result:
+                result = 'can not found '
+        elif op == '1':
+            cursor.execute("select * from tb_st_data where simple = %s", source)
+            rs = cursor.fetchone()
+            result = rs[2]
+            if not result:
+                result = 'can not found '
+        else:
+            cursor.execute("select * from tb_st_data where tradition = %s", source)
+            rs = cursor.fetchone()
+            result = rs[1]
+            if not result:
+                result = 'can not found '
+        cursor.close()
+        connection.close()
+        return result
+
 
 if __name__ == '__main__':
-    res = Api().load_toutiao_news()
-    print(json.dumps(res))
+    res = Api().ts_trans(param={"option": "1", "first": "苏"})
+    print(res)

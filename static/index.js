@@ -49,14 +49,10 @@ window.addEventListener('pywebviewready', function () {
                 $("#first").focus();
                 return false;
             }
-            if (first.length > 1) {
-                layer.msg("只能填写一个汉字", {icon: 5});
-                $("#first").focus();
-                return false;
-            }
+
             let request_obj = {"option": option, "first": first};
             // alert(JSON.stringify(request_obj))
-            pywebview.api.ts_trans(request_obj).then(response => {
+            pywebview.api.ts_trans2(request_obj).then(response => {
                 // alert("response")
                 if (response) {
                     $("#second").val(response)

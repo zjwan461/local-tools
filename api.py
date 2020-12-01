@@ -2,6 +2,7 @@ import requests
 import time
 import json
 import dbutil
+from zhconv import convert
 
 
 class Api:
@@ -87,7 +88,20 @@ class Api:
         connection.close()
         return result
 
+    def ts_trans2(self, param):
+        op = param.get("option")
+        source = param.get("first")
+        if op == '0':
+            result = convert(source, 'zh-tw')
+            if source == result:
+                result = convert(source, 'zh-cn')
+        elif op == '1':
+            result = convert(source, 'zh-tw')
+        else:
+            result = convert(source, 'zh-cn')
+        return result
+
 
 if __name__ == '__main__':
-    res = Api().ts_trans(param={"option": "1", "first": "苏"})
+    res = Api().ts_trans2(param={"option": "0", "first": "你"})
     print(res)

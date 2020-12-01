@@ -101,7 +101,20 @@ class Api:
             result = convert(source, 'zh-cn')
         return result
 
+    def get_post_data(self):
+        conn = dbutil.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("select province, city,area,post_code, area_code from tb_post_code")
+        rs = cursor.fetchall()
+        # print(rs)
+        return rs
+        # res_list = []
+        # for item in rs:
+        #     dic = {"province": item[0], "city": item[1], "area": item[2], "post_code": item[3], "area_code": item[4]}
+        #     res_list.append(dic)
+        # return res_list
+
 
 if __name__ == '__main__':
-    res = Api().ts_trans2(param={"option": "0", "first": "你"})
+    res = Api().get_post_data()
     print(res)

@@ -1,8 +1,9 @@
 window.addEventListener('pywebviewready', function () {
-    layui.use(['element', 'jquery', 'layer'], function () {
+    layui.use(['element', 'jquery', 'layer', 'table'], function () {
         var $ = layui.$;
         var element = layui.element;
         var layer = layui.layer;
+        var table = layui.table;
 
         function finishLoading() {
             $('.loading').fadeOut();//让loading效果消失，显示页面
@@ -26,12 +27,32 @@ window.addEventListener('pywebviewready', function () {
                 loadNewsData2();
             } else if (id == '3') {
                 finishLoading()
-            } else if (id == '4') {
-
+            } else if (id == '4' && $("#post-content").children().length == 0) {
+                loadPostCode()
             }
             saveCacheTab(id);
 
         });
+
+        function loadPostCode() {
+            pywebview.api.get_post_data().then(response => {
+                // alert(JSON.stringify(response))
+                $.each(response, function (index, item) {
+                    // alert(JSON.stringify(item))
+                    let row = '<tr>';
+                    let tmp = '';
+                    $.each(item, function (idx, i) {
+                        tmp += '<td>' + i + '</td>';
+                    })
+                    row = row + tmp + '</tr>';
+                    $("#post-content").append(row)
+                })
+                finishLoading();
+            }).catch(err => {
+                finishLoading();
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5});
+            })
+        }
 
         document.getElementById("fre").onclick = function () {
             loadNewsData();

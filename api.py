@@ -30,9 +30,13 @@ class Api:
         now = time.time().__str__().replace(".", "")[0: 13]
         data.setdefault("display_time", now)
 
-        response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
-        logger.info("response from baidu " + json.dumps(response.json()))
-        return response.json()
+        try:
+            response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
+            logger.info("response from baidu " + json.dumps(response.json()))
+            return response.json()
+        except Exception as e:
+            logger.error(e)
+            raise e
 
     def load_toutiao_news(self):
         data = {
@@ -40,92 +44,124 @@ class Api:
             "ac": "wap",
             "count": 20,
             "format": "json_raw",
-            "as": "A1A5FFCC538AB5B",
-            "cp": "5FC37A8BA5FB4E1",
-            # "min_behot_time": "1606658898",
-            "_signature": "GPYXZgAARznhDf9pA0CbQBj2F3",
-            "i": "1606646151"
+            "as": "A1257FFC978987B",
+            "cp": "5FC74928D7DBDE1",
+            # "min_behot_time": "0",
+            "_signature": "ayqyygAANPDGPy5yaodURWsqst",
+            # "i": ""
         }
-
+        headers = {
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+            "Referer": "https://m.toutiao.com/?W2atIF=1"
+        }
         now = time.time().__str__().replace(".", "")[0: 10]
         data.setdefault("min_behot_time", now)
-        response = requests.get("https://m.toutiao.com/list/", params=data)
-        logger.info(json.dumps(response.json()))
-        return response.json()
+        data.setdefault("i", now)
+        try:
+            response = requests.get("https://m.toutiao.com/list/", params=data, headers=headers)
+            logger.info(json.dumps(response.json()))
+            return response.json()
+        except Exception as e:
+            logger.error(e)
+            raise e
 
     def load_cache(self):
-        f = open("storage/cache.json", "r")
-        cache_str = f.read()
-        return json.loads(cache_str)
+        try:
+            f = open("storage/cache.json", "r")
+            cache_str = f.read()
+            return json.loads(cache_str)
+        except Exception as e:
+            logger.error(e)
+            raise e
 
     def save_cache(self, cache):
-        f = open("storage/cache.json", "w")
-        f.write(json.dumps(cache))
+        try:
+            f = open("storage/cache.json", "w")
+            f.write(json.dumps(cache))
+        except Exception as e:
+            logger.error(e)
+            raise e
 
     def ts_trans(self, param):
         op = param.get("option")
         source = param.get("first")
         connection = dbutil.get_connection()
         cursor = connection.cursor()
-        if op == '0':
-            cursor.execute("select * from tb_st_data where simple = %s", source)
-            rs = cursor.fetchone()
-            result = rs[2]
-            if not rs:
+        try:
+            if op == '0':
+                cursor.execute("select * from tb_st_data where simple = %s", source)
+                rs = cursor.fetchone()
+                result = rs[2]
+                if not rs:
+                    cursor.execute("select * from tb_st_data where tradition = %s", source)
+                    rs = cursor.fetchone()
+                    result = rs[1]
+                if not result:
+                    result = 'can not found '
+            elif op == '1':
+                cursor.execute("select * from tb_st_data where simple = %s", source)
+                rs = cursor.fetchone()
+                result = rs[2]
+                if not result:
+                    result = 'can not found '
+            else:
                 cursor.execute("select * from tb_st_data where tradition = %s", source)
                 rs = cursor.fetchone()
                 result = rs[1]
-            if not result:
-                result = 'can not found '
-        elif op == '1':
-            cursor.execute("select * from tb_st_data where simple = %s", source)
-            rs = cursor.fetchone()
-            result = rs[2]
-            if not result:
-                result = 'can not found '
-        else:
-            cursor.execute("select * from tb_st_data where tradition = %s", source)
-            rs = cursor.fetchone()
-            result = rs[1]
-            if not result:
-                result = 'can not found '
-        cursor.close()
-        connection.close()
-        return result
+                if not result:
+                    result = 'can not found '
+            return result
+        except Exception as e:
+            logger.error(e)
+            raise e
+        finally:
+            cursor.close()
+            connection.close()
 
     def ts_trans2(self, param):
         op = param.get("option")
         source = param.get("first")
-        if op == '0':
-            result = convert(source, 'zh-tw')
-            if source == result:
+        try:
+            if op == '0':
+                result = convert(source, 'zh-tw')
+                if source == result:
+                    result = convert(source, 'zh-cn')
+            elif op == '1':
+                result = convert(source, 'zh-tw')
+            else:
                 result = convert(source, 'zh-cn')
-        elif op == '1':
-            result = convert(source, 'zh-tw')
-        else:
-            result = convert(source, 'zh-cn')
-        return result
+            return result
+        except Exception as e:
+            logger.error(e)
+            raise e
 
     def get_post_data(self, param: dict):
         conn = dbutil.get_connection()
         cursor = conn.cursor()
-        sql = "select province, city , area,post_code , area_code from tb_post_code where 1 = 1 "
-        if param:
-            if param.get("province"):
-                sql += "and province like '" + param.get("province") + "%'"
-            if param.get("city"):
-                sql += "and city like '" + param.get("city") + "%'"
-            if param.get("area"):
-                sql += "and post_code = '" + param.get("post_code") + "'"
-            if param.get("area_code"):
-                sql += "and area_code = '" + param.get("area_code") + "'"
+        try:
+            sql = "select province, city , area,post_code , area_code from tb_post_code where 1 = 1 "
+            if param:
+                if param.get("province"):
+                    sql += "and province like '" + param.get("province") + "%'"
+                if param.get("city"):
+                    sql += "and city like '" + param.get("city") + "%'"
+                if param.get("area"):
+                    sql += "and area like '" + param.get("area") + "%'"
+                if param.get("post_code"):
+                    sql += "and post_code = '" + param.get("post_code") + "'"
+                if param.get("area_code"):
+                    sql += "and area_code = '" + param.get("area_code") + "'"
 
-        print(sql)
-        cursor.execute(sql)
-        rs = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return rs
+            logger.info("select post code data: " + sql)
+            cursor.execute(sql)
+            rs = cursor.fetchall()
+            return rs
+        except Exception as e:
+            logger.error(e)
+            raise e
+        finally:
+            cursor.close()
+            conn.close()
 
     def get_car_test_data(self, **kwargs):
         typ = kwargs.get("type")
@@ -138,4 +174,4 @@ class Api:
 
 if __name__ == '__main__':
     api = Api()
-    print(api.get_post_data({"province": "北京", "city": "北京"}))
+    print(api.load_toutiao_news())

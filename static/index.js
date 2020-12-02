@@ -27,14 +27,15 @@ window.addEventListener('pywebviewready', function () {
             } else if (id == '3') {
                 finishLoading()
             } else if (id == '4' && $("#post-content").children().length == 0) {
-                loadPostCode()
+                loadPostCode({})
             }
             saveCacheTab(id);
 
         });
 
         function loadPostCode(param) {
-            $("#post-content").remove()
+            startLoading();
+            $("#post-content").children().remove()
             pywebview.api.get_post_data(param).then(response => {
                 if (response) {
                     $.each(response, function (index, item) {
@@ -56,6 +57,21 @@ window.addEventListener('pywebviewready', function () {
                 layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5});
             })
         }
+
+        $("#search").on('click', function () {
+            let request_obj = {
+                'province': $("#province").val(),
+                'city': $("#city").val(),
+                'area': $("#area").val(),
+                'post_code': $("#post_code").val(),
+                "area_code": $("#area_code").val()
+            }
+            loadPostCode(request_obj)
+        })
+
+        $("#reset").on('click', function () {
+            loadPostCode({})
+        })
 
         document.getElementById("fre").onclick = function () {
             loadNewsData();

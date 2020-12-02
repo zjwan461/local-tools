@@ -1,27 +1,13 @@
 import webview
 import api
 from flask import Flask, render_template
-from logutil import Logger
 
 server = Flask(__name__, static_folder="static", template_folder="template")
-logger = Logger("main")
 
 
 @server.route("/")
 def index():
     return render_template("index.html")
-
-
-@server.errorhandler(Exception)
-def error_handle(e):
-    logger.error(e)
-    return ','.join(e.args)
-
-
-@server.errorhandler(404)
-def page_not_found(e):
-    logger.error(e)
-    return str.__str__(e.description)
 
 
 js_api = api.Api()

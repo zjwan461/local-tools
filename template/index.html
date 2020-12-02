@@ -95,7 +95,21 @@
             </div>
             <div class="layui-tab-item">
                 <div id="post">
-                    <input type="text" class="layui-input">
+                    <div>
+                        <blockquote class="layui-elem-quote layui-text">你可以通过如下选项筛选数据，请注意仅省份、城市、区县支持模糊匹配，邮编和区号不支持
+                        </blockquote>
+                    </div>
+                    <div>
+                        <input type="text" class="layui-input-inline" placeholder="省份" id="province">
+                        <input type="text" class="layui-input-inline" placeholder="城市" id="city">
+                        <input type="text" class="layui-input-inline" placeholder="区县" id="area">
+                        <input type="text" class="layui-input-inline" placeholder="邮编" id="post_code">
+                        <input type="text" class="layui-input-inline" placeholder="区号" id="area_code">
+                        <div class="layui-btn-group">
+                            <button type="button" class="layui-btn-sm layui-btn" id="search">查询</button>
+                            <button type="button" class="layui-btn-sm layui-btn-normal layui-btn" id="reset">重制</button>
+                        </div>
+                    </div>
                     <table class="layui-table">
                         <colgroup>
                             <col>

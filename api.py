@@ -163,15 +163,29 @@ class Api:
             cursor.close()
             conn.close()
 
-    def get_car_test_data(self, **kwargs):
-        typ = kwargs.get("type")
-        if str.lower(typ) == 'all':
-            pass
-        elif str.lower(typ) == 'random':
-            pass
-        return ""
+    def get_car_test_data(self, *num):
+        conn = dbutil.get_connection()
+        cursor = conn.cursor()
+        param = 10
+        if num and num[0]:
+            param = num[0]
+        try:
+            sql = '''
+                select @num:=@num+1 as row_num, a.* from 
+                (
+                select question,answer,item1,item2,item3,item4, explains,url from tb_car_test order by rand() limit %s
+                ) a, (select @num:=0) r
+            '''
+            logger.info("select car test data: " + sql + ", params is " + str(param))
+            cursor.execute(sql, int(param))
+            rs = cursor.fetchall()
+            print(rs)
+            return rs
+        except Exception as e:
+            logger.error(e)
+            raise e
 
 
 if __name__ == '__main__':
     api = Api()
-    print(api.load_toutiao_news())
+    print(api.get_car_test_data(50))

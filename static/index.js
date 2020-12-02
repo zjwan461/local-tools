@@ -28,10 +28,65 @@ window.addEventListener('pywebviewready', function () {
                 finishLoading()
             } else if (id == '4' && $("#post-content").children().length == 0) {
                 loadPostCode({})
+            } else if (id == '5') {
+                finishLoading()
             }
             saveCacheTab(id);
 
         });
+
+        $("#ran-gen5").on('click', function () {
+            loadCarTestData(50);
+        });
+
+        $("#ran-gen10").on('click', function () {
+            loadCarTestData(100);
+        });
+
+        $("#ran-gen").on('click', function () {
+            let num = $("#car-test-num").val();
+            if (!num || num <= 0) {
+                layer.msg("输入的题数必须大于0", {icon: 5});
+                return false;
+            }
+            loadCarTestData(num);
+        });
+
+        function loadCarTestData(num) {
+            startLoading();
+            $("#car-test-content").children().remove();
+            pywebview.api.get_car_test_data(num).then(response => {
+                // alert(typeof response)
+                finishLoading();
+                $.each(response, function (index, item) {
+                    $("#car-test-content").append(`
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                ` +
+                        item[0] + "," + item[1] + "<br>" + genOptions(item)
+                        + `
+                            </div>
+                        </div>
+                    `)
+                });
+            }).catch(err => {
+                finishLoading();
+                layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5});
+            })
+        }
+
+        function genOptions(obj) {
+            result = "";
+            // return obj[3] + "&nbsp;&nbsp; 2," + obj[4] + "&nbsp;&nbsp;3," + obj[5] + "&nbsp;&nbsp;4," + item[6]
+            num = 1;
+            $.each(obj, function (index, item) {
+                if (index >= 3 && index < 7 && item) {
+                    result += "(" +num + "), " + item + "<br>";
+                    num++;
+                }
+            });
+            return result;
+        }
 
         function loadPostCode(param) {
             startLoading();

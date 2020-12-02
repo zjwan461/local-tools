@@ -100,14 +100,29 @@
                         </blockquote>
                     </div>
                     <div>
-                        <input type="text" class="layui-input-inline" placeholder="省份" id="province">
-                        <input type="text" class="layui-input-inline" placeholder="城市" id="city">
-                        <input type="text" class="layui-input-inline" placeholder="区县" id="area">
-                        <input type="text" class="layui-input-inline" placeholder="邮编" id="post_code">
-                        <input type="text" class="layui-input-inline" placeholder="区号" id="area_code">
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" autocomplete="off" placeholder="城市" id="city">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" autocomplete="off" placeholder="区县" id="area">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" autocomplete="off" placeholder="省份"
+                                   id="province">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" autocomplete="off" placeholder="邮编"
+                                   id="post_code">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" autocomplete="off" placeholder="区号"
+                                   id="area_code">
+                        </div>
+                        <br><br>
                         <div class="layui-btn-group">
                             <button type="button" class="layui-btn-sm layui-btn" id="search">查询</button>
-                            <button type="button" class="layui-btn-sm layui-btn-normal layui-btn" id="reset">重制</button>
+                            <button type="button" class="layui-btn-sm layui-btn-normal layui-btn" id="reset">重制
+                            </button>
                         </div>
                     </div>
                     <table class="layui-table">
@@ -132,7 +147,23 @@
                     </table>
                 </div>
             </div>
-            <div class="layui-tab-item">还没写</div>
+            <div class="layui-tab-item">
+                <div id="car-test">
+                    <div>
+                        <button class="layui-btn" id="ran-gen5">随机生成50道题</button>
+                        <button class="layui-btn" id="ran-gen10">随机生成100道题</button>
+                        <div class="layui-input-inline">
+                            <input type="number" id="car-test-num" placeholder="题数" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                        <button class="layui-btn layui-btn-normal" id="ran-gen">随机生成</button>
+                    </div>
+<!--                    <hr class="layui-bg-green">-->
+                    <div id="car-test-content">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

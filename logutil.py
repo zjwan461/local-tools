@@ -1,8 +1,9 @@
 import logging
 import logging.config
 import os
+import config
 
-log_path = "log"
+log_path = config.get_log_config().get_path()
 if not os.path.exists(log_path):
     os.mkdir(log_path)
 
@@ -25,9 +26,3 @@ class Logger:
 
     def error(self, e):
         logging.exception(e)
-
-
-if __name__ == '__main__':
-    logger = Logger()
-    logger.error(Exception("exc"))
-    logger.warn("abcd")

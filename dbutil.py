@@ -1,12 +1,10 @@
 import pymysql
-import json
+import config
 
-f = open(file="storage/config.json", mode="r")
-conf = f.read()
-db_dic = json.loads(conf).get("db")
+dbConfig = config.get_db_config()
 
 
 def get_connection():
-    connection = pymysql.Connect(db_dic.get("url"), db_dic.get("username"), db_dic.get("password"),
-                                 db_dic.get("database"))
+    connection = pymysql.Connect(dbConfig.get_url(), dbConfig.get_username(), dbConfig.get_password(),
+                                 dbConfig.get_database())
     return connection

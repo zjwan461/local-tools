@@ -1,23 +1,11 @@
 {
-  "baidu_weather": {
-    "pd": "newsplus",
-    "os": "android",
-    "sv": "8.3.1.5",
-    "from": "app",
-    "_uid": "YuBW8YifvilSP2ig_8SvulO_Hug7aviT_8Sa8guASu8lav8_ju-Hf_uq2tgka2fWA",
-    "_ua": "_a-qiyuOvfg4NE6lI5me6NI0-I_UC2N5gI2cfAjYC",
-    "_ut": "ltQnN0fK2i4qavC4gODlPpiL3ur9A",
-    "_from": "1014852z",
-    "_cfrom": "1014852z",
-    "_network": "1_0",
-    "cen": "uid_ua_ut",
-    "cuid": "86939D53E9005BFEE9EF53252DB373AA|041979840183368",
-    "id": "5515"
-  },
   "db": {
     "url": "server",
     "username": "xxx",
     "password": "xxx",
     "database": "xxx"
+  },
+  "log": {
+    "path": "log"
   }
 }

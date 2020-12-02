@@ -126,11 +126,6 @@ class Api:
         cursor.close()
         conn.close()
         return rs
-        # res_list = []
-        # for item in rs:
-        #     dic = {"province": item[0], "city": item[1], "area": item[2], "post_code": item[3], "area_code": item[4]}
-        #     res_list.append(dic)
-        # return res_list
 
     def get_car_test_data(self, **kwargs):
         typ = kwargs.get("type")

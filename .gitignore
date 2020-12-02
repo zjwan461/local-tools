@@ -114,7 +114,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.idea
+.idea/
 main.spec
 
 log

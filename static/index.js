@@ -1,9 +1,8 @@
 window.addEventListener('pywebviewready', function () {
-    layui.use(['element', 'jquery', 'layer', 'table'], function () {
+    layui.use(['element', 'jquery', 'layer'], function () {
         var $ = layui.$;
         var element = layui.element;
         var layer = layui.layer;
-        var table = layui.table;
 
         function finishLoading() {
             $('.loading').fadeOut();//让loading效果消失，显示页面
@@ -34,19 +33,23 @@ window.addEventListener('pywebviewready', function () {
 
         });
 
-        function loadPostCode() {
-            pywebview.api.get_post_data().then(response => {
-                // alert(JSON.stringify(response))
-                $.each(response, function (index, item) {
-                    // alert(JSON.stringify(item))
-                    let row = '<tr>';
-                    let tmp = '';
-                    $.each(item, function (idx, i) {
-                        tmp += '<td>' + i + '</td>';
+        function loadPostCode(param) {
+            $("#post-content").remove()
+            pywebview.api.get_post_data(param).then(response => {
+                if (response) {
+                    $.each(response, function (index, item) {
+                        let row = '<tr>';
+                        let tmp = '';
+                        $.each(item, function (idx, i) {
+                            tmp += '<td>' + i + '</td>';
+                        })
+                        row = row + tmp + '</tr>';
+                        $("#post-content").append(row)
                     })
-                    row = row + tmp + '</tr>';
-                    $("#post-content").append(row)
-                })
+                } else {
+                    let row = `<p style="text-align='center' class='layui-text' "> no data found </p>`;
+                    $("#post-content").parent().parent().append(row);
+                }
                 finishLoading();
             }).catch(err => {
                 finishLoading();

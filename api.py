@@ -101,10 +101,22 @@ class Api:
             result = convert(source, 'zh-cn')
         return result
 
-    def get_post_data(self):
+    def get_post_data(self, param: dict):
         conn = dbutil.get_connection()
         cursor = conn.cursor()
-        cursor.execute("select province, city,area,post_code, area_code from tb_post_code")
+        sql = "select province, city , area,post_code , area_code from tb_post_code where 1 = 1 "
+        if param:
+            if param.get("province"):
+                sql += "and province like '" + param.get("province") + "%'"
+            if param.get("city"):
+                sql += "and city like '" + param.get("city") + "%'"
+            if param.get("area"):
+                sql += "and post_code = '" + param.get("post_code") + "'"
+            if param.get("area_code"):
+                sql += "and area_code = '" + param.get("area_code") + "'"
+
+        print(sql)
+        cursor.execute(sql)
         rs = cursor.fetchall()
         # print(rs)
         return rs
@@ -116,5 +128,5 @@ class Api:
 
 
 if __name__ == '__main__':
-    res = Api().get_post_data()
-    print(res)
+    api = Api()
+    print(api.get_post_data({"province": "北京", "city": "北京"}))

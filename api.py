@@ -3,9 +3,13 @@ import time
 import json
 import dbutil
 from zhconv import convert
+from logutil import Logger
+
+logger = Logger("Api.py")
 
 
 class Api:
+
     def show_tips(self):
         return "today is a good day"
 
@@ -25,8 +29,9 @@ class Api:
 
         now = time.time().__str__().replace(".", "")[0: 13]
         data.setdefault("display_time", now)
+
         response = requests.post("https://news.baidu.com/sn/api/feed_feedlist", data=data)
-        print(json.dumps(response.json()))
+        logger.info("response from baidu " + json.dumps(response.json()))
         return response.json()
 
     def load_toutiao_news(self):
@@ -45,7 +50,7 @@ class Api:
         now = time.time().__str__().replace(".", "")[0: 10]
         data.setdefault("min_behot_time", now)
         response = requests.get("https://m.toutiao.com/list/", params=data)
-        print(json.dumps(response.json()))
+        logger.info(json.dumps(response.json()))
         return response.json()
 
     def load_cache(self):
@@ -118,13 +123,22 @@ class Api:
         print(sql)
         cursor.execute(sql)
         rs = cursor.fetchall()
-        # print(rs)
+        cursor.close()
+        conn.close()
         return rs
         # res_list = []
         # for item in rs:
         #     dic = {"province": item[0], "city": item[1], "area": item[2], "post_code": item[3], "area_code": item[4]}
         #     res_list.append(dic)
         # return res_list
+
+    def get_car_test_data(self, **kwargs):
+        typ = kwargs.get("type")
+        if str.lower(typ) == 'all':
+            pass
+        elif str.lower(typ) == 'random':
+            pass
+        return ""
 
 
 if __name__ == '__main__':

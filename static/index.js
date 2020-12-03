@@ -59,20 +59,45 @@ window.addEventListener('pywebviewready', function () {
                 // alert(typeof response)
                 finishLoading();
                 $.each(response, function (index, item) {
+                    // alert(index)
                     $("#car-test-content").append(`
                         <div class="layui-card">
                             <div class="layui-card-body">
                                 ` +
-                        item[0] + "," + item[1] + "<br>" + genOptions(item)
+                        item[0] + "," + item[1] + "<br>" + genOptions(item) + genImg(item) + `<button class="show-answer layui-btn layui-btn-xs layui-btn-warm">查看解析</button>` + genAnalysis(item)
                         + `
                             </div>
                         </div>
                     `)
                 });
+
+                $(".show-answer").on('click', function () {
+                    $(this).next().removeClass('layui-hide')
+                });
+
             }).catch(err => {
                 finishLoading();
                 layer.msg("you know, shit happens; error : " + JSON.stringify(err), {icon: 5});
             })
+        }
+
+        function genAnalysis(obj) {
+            let result = `<div class="layui-hide">
+                    正确答案是：` + obj [2] + `<br>
+                    <strong>解析：</strong><div class="layui-text">` + obj[7] + `</div>
+                </div>
+            `;
+            return result;
+
+        }
+
+        function genImg(obj) {
+            let result = "";
+            if (obj[8]) {
+                result = `<img src='` + obj[8] + `' /><br>`
+            }
+
+            return result;
         }
 
         function genOptions(obj) {
@@ -81,7 +106,7 @@ window.addEventListener('pywebviewready', function () {
             num = 1;
             $.each(obj, function (index, item) {
                 if (index >= 3 && index < 7 && item) {
-                    result += "(" +num + "), " + item + "<br>";
+                    result += "(" + num + "), " + item + "<br>";
                     num++;
                 }
             });

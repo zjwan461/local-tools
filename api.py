@@ -179,7 +179,6 @@ class Api:
             logger.info("select car test data: " + sql + ", params is " + str(param))
             cursor.execute(sql, int(param))
             rs = cursor.fetchall()
-            print(rs)
             return rs
         except Exception as e:
             logger.error(e)

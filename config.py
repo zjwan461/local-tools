@@ -42,3 +42,24 @@ class LogConfig:
 
     def get_path(self):
         return self.path
+
+
+class WeatherConfig:
+
+    def __init__(self, kwargs: dict):
+        self.url = kwargs.get("url")
+        self.request_type = kwargs.get("request_type")
+        self.city_code_type = kwargs.get("city_code_file").get("type")
+        self.city_code_address = kwargs.get("city_code_file").get("address")
+
+    def get_url(self):
+        return self.url
+
+    def get_request_type(self):
+        return self.request_type
+
+    def get_city_code_type(self):
+        return self.city_code_type
+
+    def get_city_code_address(self):
+        return self.city_code_address

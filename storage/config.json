@@ -7,5 +7,13 @@
   },
   "log": {
     "path": "log"
+  },
+  "weather": {
+    "url": "http://t.weather.itboy.net/api/weather/city/",
+    "request_type": "restful",
+    "city_code_file": {
+      "type": "file",
+      "address": "storage/city_code.json"
+    }
   }
 }

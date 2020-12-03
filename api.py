@@ -185,6 +185,9 @@ class Api:
             logger.error(e)
             raise e
 
+    def get_weather_data(self, city):
+        pass
+
 
 if __name__ == '__main__':
     api = Api()

@@ -14,6 +14,10 @@ def get_log_config():
     return LogConfig(dic.get("log"))
 
 
+def get_weather_config():
+    return WeatherConfig(dic.get("weather"))
+
+
 class DbConfig:
 
     def __init__(self, kwargs: dict):
@@ -48,15 +52,11 @@ class WeatherConfig:
 
     def __init__(self, kwargs: dict):
         self.url = kwargs.get("url")
-        self.request_type = kwargs.get("request_type")
         self.city_code_type = kwargs.get("city_code_file").get("type")
         self.city_code_address = kwargs.get("city_code_file").get("address")
 
     def get_url(self):
         return self.url
-
-    def get_request_type(self):
-        return self.request_type
 
     def get_city_code_type(self):
         return self.city_code_type

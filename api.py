@@ -1,11 +1,51 @@
+import os
 import requests
 import time
 import json
 import dbutil
 from zhconv import convert
 from logutil import Logger
+import config
 
 logger = Logger("Api.py")
+
+
+class CityObj:
+    def __init__(self, id: int, pid: int, city_code, city_name, post_code, area_code, c_time):
+        self.id = id
+        self.pid = pid
+        self.city_code = city_code
+        self.city_name = city_name
+        self.post_code = post_code
+        self.area_code = area_code
+        self.c_time = c_time
+
+    def set_children(self, children: list):
+        self.children = children
+
+    def get_children(self):
+        return self.children
+
+    def get_id(self):
+        return self.id
+
+    def get_pid(self):
+        return self.pid
+
+    def get_city_code(self):
+        return self.city_code
+
+    def get_city_name(self):
+        return self.city_name
+
+    def get_post_code(self):
+        return self.post_code
+
+    def get_area_code(self):
+        return self.area_code
+
+    def get_c_time(self):
+        return self.c_time
 
 
 class Api:
@@ -67,7 +107,7 @@ class Api:
 
     def load_cache(self):
         try:
-            f = open("storage/cache.json", "r")
+            f = open("storage/cache/cache.json", "r")
             cache_str = f.read()
             return json.loads(cache_str)
         except Exception as e:
@@ -76,7 +116,7 @@ class Api:
 
     def save_cache(self, cache):
         try:
-            f = open("storage/cache.json", "w")
+            f = open("storage/cache/cache.json", "w")
             f.write(json.dumps(cache))
         except Exception as e:
             logger.error(e)
@@ -184,10 +224,87 @@ class Api:
             logger.error(e)
             raise e
 
-    def get_weather_data(self, city):
-        pass
+    def get_weather_data_cache(self, province, city, county):
+        file_path = "storage/cache/" + province + city + county + "_weather.cache"
+        if os.path.exists(file_path):
+            f = open(file_path, "r")
+            weather_cache = json.loads(f.read())
+            for key in weather_cache.keys():
+                if (time.time() - float(key)) < 60 * 15:
+                    return weather_cache.get(key)
+                else:
+                    return None
+        else:
+            return None
+
+    def get_weather_data(self, **kwargs):
+        cache_data = self.get_weather_data_cache(kwargs.get("province"), kwargs.get("city"), kwargs.get("county"))
+        if cache_data:
+            return cache_data
+        weather_conf = config.get_weather_config()
+        typ = weather_conf.get_city_code_type()
+        address = weather_conf.get_city_code_address()
+        url = weather_conf.get_url()
+        result = []
+        if typ == 'file':
+            f = open(address, "r", encoding="UTF-8")
+            city_code_data = json.loads(f.read())
+            result = self.__trans__(city_code_data)
+        elif typ == 'http':
+            pass
+
+        city_code = self.__search__(result, **kwargs)
+        if city_code:
+            response = requests.get(url + str(city_code))
+            if response.status_code == 200:
+                f = open("storage/cache/" + kwargs.get("province") + kwargs.get("city") + kwargs.get(
+                    "county") + "_weather.cache", "w")
+                content = {time.time(): response.json()}
+                f.write(json.dumps(content))
+        else:
+            response = " can not found city code for you position " + json.dumps(kwargs)
+        return response
+
+    def __search__(self, trans_list: list, **kwargs):
+        province = kwargs.get("province")
+        city = kwargs.get("city")
+        county = kwargs.get("county")
+        city_code = None
+        for item in trans_list:
+            if item.get_city_name() == province:
+                for item2 in item.get_children():
+                    if item2.get_city_name() == city:
+                        city_code = item2.get_city_code()
+                        for item3 in item2.get_children():
+                            if item3.get_city_name() == county:
+                                city_code = item3.get_city_code()
+                                break
+        return city_code
+
+    def __trans__(self, city_code_data: list):
+        arr = []
+        for item in city_code_data:
+            if item.get("pid") == 0:
+                cb = CityObj(id=item.get("id"), pid=item.get("pid"), city_code=item.get("city_code"),
+                             city_name=item.get("city_name"), post_code=item.get("post_code"),
+                             area_code=item.get("area_code"), c_time=item.get("ctime"))
+                cb.set_children(self.__trans2__(item.get("id"), city_code_data))
+                arr.append(cb)
+        return arr
+
+    def __trans2__(self, pid: int, city_code_data: list):
+        arr = []
+        for item in city_code_data:
+            if item.get("pid") == pid:
+                cb = CityObj(id=item.get("id"), pid=item.get("pid"), city_code=item.get("city_code"),
+                             city_name=item.get("city_name"), post_code=item.get("post_code"),
+                             area_code=item.get("area_code"), c_time=item.get("ctime"))
+                cb.set_children(self.__trans2__(item.get("id"), city_code_data))
+                arr.append(cb)
+        return arr
 
 
 if __name__ == '__main__':
     api = Api()
-    print(api.get_car_test_data(50))
+    api.get_weather_data(province="安徽", city="安庆", county="太湖县")
+    # print()
